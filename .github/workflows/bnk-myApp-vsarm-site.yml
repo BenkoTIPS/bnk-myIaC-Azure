@@ -7,8 +7,6 @@ on:
 env:
   APP_NAME: myIaC-arm-gha
   AZURE_RG_LOCATION: centralus
-  AZURE_RG: bnk-${{APP_NAME}}-rg
-  AZURE_WEBAPP_NAME: bnk-${{APP_NAME}}-site
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
   #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
   CONFIGURATION: Release
@@ -49,8 +47,8 @@ jobs:
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
         echo "AZURE_RG=$(echo bnk-${env.APP_NAME}-rg)" >> $GITHUB_ENV
         echo "AZURE_APP=$(echo bnk-${env.APP_NAME}-site)" >> $GITHUB_ENV
-        echo 'AZURE_RG: ' ${{env.AZURE_RG}}
-        echo 'AZURE_APP: ' ${{env.AZURE_APP}}
+        echo "AZURE_RG" ${{env.AZURE_RG}}
+        echo "AZURE_APP" ${{env.AZURE_APP}}
         pwd
         ls -la deploy/arm
         az group create --name ${{ env.AZURE_RG }} --location ${{ env.AZURE_RG_LOCATION }}
@@ -63,13 +61,13 @@ jobs:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ env.AZURE_RG }}
         template: ./deploy/arm/WebSite.json
-        parameters: deploy/arm/WebSite.parameters.json appName=myIaC-arm-gha
+        parameters: deploy/arm/WebSite.parameters.json appName=${{ env.APP_NAME }}
 
     # Deploy Code to Azure
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ env.APP_NAME }}
+        app-name: ${{ env.AZURE_APP }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
         # publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
