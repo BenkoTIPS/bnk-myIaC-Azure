@@ -45,6 +45,8 @@ jobs:
       run: |
         echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+        pwd
+        ls -la
 
       # Deploy ARM template
     - name: Run ARM deploy
@@ -52,8 +54,8 @@ jobs:
       with:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ env.AZURE_RG }}
-        template: ../deploy/arm/website.json
-        parameters: ../deploy/arm/WebSite.parameters.json
+        template: deploy/arm/website.json
+        parameters: deploy/arm/WebSite.parameters.json
 
     # Deploy Code to Azure
     - name: Deploy to Azure WebApp
