@@ -40,14 +40,13 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-
     - name: Setup AzureCLI
       run: |
         echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
         echo bnk-${{env.APP_NAME}}-rg
-        echo "AZURE_RG=$(echo bnk-${{env.APP_NAME}}-rg)" >> $GITHUB_ENV
-        echo "AZURE_APP=$(echo bnk-${{env.APP_NAME}}-site)" >> $GITHUB_ENV
+        echo "AZURE_RG=bnk-${{env.APP_NAME}}-rg" >> $GITHUB_ENV
+        echo "AZURE_APP=bnk-${{env.APP_NAME}}-site" >> $GITHUB_ENV
         echo "AZURE_RG  ${{env.AZURE_RG}}"
         echo "AZURE_APP ${{env.AZURE_APP}}"
         pwd
