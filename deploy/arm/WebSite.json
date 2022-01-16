@@ -5,7 +5,7 @@
     "appName": { "type": "string" },
     "envName": { "type": "string" },
     "favoriteColor": { "type": "string" },
-    "mySecret": { "type": "securestring" },
+    "mySecret": { "type": "securestring" }
   },
   "variables": {
     "prefix": "[concat(parameters('envName'),'-',parameters('appName'))]",
