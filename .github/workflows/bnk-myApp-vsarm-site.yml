@@ -5,7 +5,7 @@ on:
     branches:
     - 1.0-VSArm
 env:
-  APP_NAME: myIaC-arm-gha
+  APP_NAME: IaC-arm-ga
   AZURE_RG_LOCATION: centralus
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
   #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
@@ -17,23 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-
-    - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-
-    - name: Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-
-    - name: Test
-      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-
-    - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
 
       # Deploy Infrastructure
     - uses: azure/login@v1
@@ -57,6 +40,23 @@ jobs:
         resourceGroupName: bnk-${{ env.APP_NAME }}-rg
         template: ./deploy/arm/WebSite.json
         parameters: deploy/arm/WebSite.parameters.json appName=${{ env.APP_NAME }}
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
 
     # Deploy Code to Azure
     - name: Deploy to Azure WebApp
