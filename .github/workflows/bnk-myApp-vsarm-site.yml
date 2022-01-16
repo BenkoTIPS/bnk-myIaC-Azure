@@ -1,7 +1,7 @@
 name: Build and deploy .NET Core app to Windows WebApp bnk-myApp-vsarm-site
 on:
   workflow_dispatch: # Run manually 
-  push: # Run on Push...only this branch
+  push:
     branches:
     - 1.0-VSArm
 env:
@@ -13,7 +13,7 @@ env:
   WORKING_DIRECTORY: myApp
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
