@@ -39,12 +39,11 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+
     - name: Setup Authentication for AzureCLI
-      uses: Azure/cli@v1
-      with:
-        inlineScript: | 
-          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+      run: |
+        echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+        echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
 
       # Deploy ARM template
     - name: Run ARM deploy
