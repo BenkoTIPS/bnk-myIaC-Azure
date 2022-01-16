@@ -6,7 +6,7 @@ on:
     - 1.0-VSArm
 env:
   APP_NAME: myIaC-arm-gha
-  AZURE_RG: bnk-${{env.APP_NAME}}-rg
+  AZURE_RG: bnk-$APP_NAME-rg
   AZURE_RG_LOCATION: centralus
   AZURE_WEBAPP_NAME: bnk-${{env.APP_NAME}}-site
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
