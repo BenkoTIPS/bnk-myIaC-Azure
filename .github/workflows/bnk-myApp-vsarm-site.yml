@@ -54,7 +54,7 @@ jobs:
       with:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ env.AZURE_RG }}
-        template: ./deploy/arm/WebSite.json
+        template: ./deploy/arm/WebxSite.json
         parameters: deploy/arm/WebSite.parameters.json
 
     # Deploy Code to Azure
