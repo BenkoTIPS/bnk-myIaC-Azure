@@ -44,11 +44,11 @@ jobs:
       run: |
         echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
-        echo "AZURE_RG=$(bnk-${{env.APP_NAME}}-rg)" >> $GITHUB_ENV
-        echo "AZURE_APP=$(bnk-${{env.APP_NAME}}-site)" >> $GITHUB_ENV
+        echo "AZURE_RG=$(bnk-${APP_NAME}-rg)" >> $GITHUB_ENV
+        echo "AZURE_APP=$(bnk-${APP_NAME}-site)" >> $GITHUB_ENV
         pwd
         ls -la deploy/arm
-        az group create --name $AZURE_RG --location $AZURE_RG_LOCATION
+        az group create --name ${AZURE_RG} --location ${AZURE_RG_LOCATION}
         echo "Azure resource group created"
 
       # Deploy ARM template
