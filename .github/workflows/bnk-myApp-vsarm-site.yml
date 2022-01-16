@@ -5,10 +5,12 @@ on:
     branches:
     - 1.0-VSArm
 env:
-  AZURE_RG: bnk-myIaC-vsarm-rg
-  AZURE_WEBAPP_NAME: bnk-myApp-vsarm-site
+  APP_NAME: myIaC-arm-gha
+  AZURE_RG: bnk-${{env.APP_NAME}}-rg
+  AZURE_RG_LOCATION: centralus
+  AZURE_WEBAPP_NAME: bnk-${{env.APP_NAME}}-site
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
+  #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: myApp
@@ -41,12 +43,14 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 
-    - name: Setup Authentication for AzureCLI
+    - name: Setup AzureCLI
       run: |
         echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
         pwd
         ls -la deploy/arm
+        az group create --name ${{ env.AZURE_RG }} --location ${{ env.AZURE_RG_LOCATION }}
+        echo "Azure resource group created"
 
       # Deploy ARM template
     - name: Run ARM deploy
@@ -61,9 +65,9 @@ jobs:
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        app-name: ${{ env.APP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        # publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1.0.0
