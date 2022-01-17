@@ -4,8 +4,10 @@ on:
   push:
     branches:
     - 1.0-VSArm
+    - 1.1-Code-Bicep
+
 env:
-  APP_NAME: IaC-arm-ga
+  APP_NAME: IaC-arm
   AZURE_RG_LOCATION: centralus
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
   #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
@@ -29,7 +31,7 @@ jobs:
         echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
         pwd
         ls -la deploy/arm
-        az group create --name bnk-${{env.APP_NAME}}-rg --location ${{env.AZURE_RG_LOCATION}}
+        az group create --name bnk-${{env.APP_NAME}}-actions --location ${{env.AZURE_RG_LOCATION}}
         echo "Azure resource group created"
 
       # Deploy ARM template
@@ -37,7 +39,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
-        resourceGroupName: bnk-${{ env.APP_NAME }}-rg
+        resourceGroupName: bnk-${{ env.APP_NAME }}-actions
         template: ./deploy/arm/WebSite.json
         parameters: deploy/arm/WebSite.parameters.json appName=${{ env.APP_NAME }}
 
