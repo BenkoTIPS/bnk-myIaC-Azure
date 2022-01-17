@@ -7,7 +7,7 @@ on:
   #   - complete
   workflow_run:
     workflows:
-      - Deploy-IaC-ARM
+      - Deploy-IaC-Bicep
     types:
       - completed
     branches:
@@ -15,7 +15,7 @@ on:
     - complete
 
 env:
-  APP_NAME: IaC-arm
+  APP_NAME: IaC-bicep
   AZURE_RG_LOCATION: centralus
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
   #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
