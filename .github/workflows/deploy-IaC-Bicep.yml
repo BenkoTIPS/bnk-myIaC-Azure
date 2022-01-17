@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core app to Windows WebApp bnk-myApp-vsarm-site
+name: deploy-IaC-Bicep
 on:
   workflow_dispatch: # Run manually 
   push:
