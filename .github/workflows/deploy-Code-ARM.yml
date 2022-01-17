@@ -1,0 +1,14 @@
+name: Deploy Code ARM
+on:
+  workflow_run:
+    workflows:
+      - "deploy-IaC-ARM"
+    type:
+      - complete
+
+jobs:
+  say_hi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hi
+        run: echo "Hi"
