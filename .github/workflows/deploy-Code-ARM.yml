@@ -1,10 +1,10 @@
 name: Deploy Code ARM
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - 1.2-Code-ARM
-    - complete
+  # push:
+  #   branches:
+  #   - 1.2-Code-ARM
+  #   - complete
   workflow_run:
     workflows:
       - "deploy-IaC-ARM"
@@ -24,7 +24,7 @@ env:
   WORKING_DIRECTORY: myApp
 
 jobs:
-  deploy-Code:
+  Build-Code:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -46,7 +46,14 @@ jobs:
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
 
+  Deploy-Code:
+    runs-on: ubuntu-latest
+    steps:
     # Deploy Code to Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
