@@ -7,7 +7,7 @@ on:
     - 1.2-Code-ARM
 
 env:
-  APP_NAME: IaC-bicep
+  APP_NAME: IaC-Bicep
   AZURE_RG_LOCATION: centralus
 jobs:
   build-and-deploy-Bicep:
@@ -35,6 +35,6 @@ jobs:
       with:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: bnk-${{ env.APP_NAME }}-actions
-        template: ./deploy/arm/WebSite.json
-        parameters: deploy/arm/params.bnk.json appName=${{ env.APP_NAME }}
+        template: ./deploy/bicep/WebSite.json
+        parameters: deploy/bicep/params.bnk.json appName=${{ env.APP_NAME }}
 

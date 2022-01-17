@@ -7,7 +7,7 @@ on:
     - 1.2-Code-ARM
 
 env:
-  APP_NAME: IaC-arm
+  APP_NAME: IaC-Arm
   AZURE_RG_LOCATION: centralus
 jobs:
   deploy-ARM:
