@@ -52,7 +52,7 @@ resource webSiteName_appsettings 'Microsoft.Web/sites/config@2015-08-01' = {
     displayName: 'config'
   }
   properties: {
-    EnvName: envName
+    EnvName: appName
     FavoriteColor: favoriteColor
     MySecret: mySecret
     APPINSIGHTS_INSTRUMENTATIONKEY: insightsName.properties.InstrumentationKey

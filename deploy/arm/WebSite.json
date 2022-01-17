@@ -65,7 +65,7 @@
             "displayName": "config"
           },
           "properties": {
-            "EnvName": "[parameters('envName')]",
+            "EnvName": "[parameters('appName')]",
             "FavoriteColor": "[parameters('favoriteColor')]",
             "MySecret": "[parameters('mySecret')]",
             "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', variables('insightsName'))).InstrumentationKey]"
