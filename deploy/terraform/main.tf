@@ -57,6 +57,7 @@ resource "azurerm_app_service" "site" {
   }
   site_config  {
     dotnet_framework_version = "v6.0"
+    linux_fx_version = "DOTNETCORE|6.0"
     app_command_line = "dotnet myapp.dll"
   }
 }
