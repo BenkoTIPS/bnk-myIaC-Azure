@@ -3,8 +3,6 @@ on:
   workflow_dispatch: # Run manually 
   push:
     branches:
-    - 1.0-VSArm
-    - 1.2-Code-ARM
     - master
     paths:
       - "deploy/arm/**"

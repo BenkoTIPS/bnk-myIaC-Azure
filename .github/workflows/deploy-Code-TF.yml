@@ -1,4 +1,4 @@
-name: Deploy-Code-Bicep
+name: Deploy-Code-TF
 on:
   workflow_dispatch:
   # push:
@@ -7,7 +7,7 @@ on:
   #   - complete
   workflow_run:
     workflows:
-      - Deploy-IaC-Bicep
+      - Deploy-IaC-TF
     types:
       - completed
     branches:
@@ -16,7 +16,7 @@ on:
       - "myApp/**"
 
 env:
-  APP_NAME: IaC-Bicep
+  APP_NAME: IaC-TF
   AZURE_RG_LOCATION: centralus
   AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
   #AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.bnk_myApp_vsarm_site_47a1 }}
