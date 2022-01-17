@@ -6,6 +6,8 @@ on:
     - 1.0-VSArm
     - 1.2-Code-ARM
     - master
+    paths:
+      - "deploy/arm/**"
 
 env:
   APP_NAME: IaC-Arm

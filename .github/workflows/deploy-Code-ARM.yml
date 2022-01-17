@@ -13,6 +13,8 @@ on:
     branches:
     - 1.2-Code-ARM
     - master
+    paths:
+      - "myApp/**"
 
 env:
   APP_NAME: IaC-Arm

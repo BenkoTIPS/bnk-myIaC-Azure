@@ -6,6 +6,8 @@ on:
     - 1.2-Code-Bicep
     - 1.2-Code-ARM
     - master
+    paths:
+      - "deploy/bicep/**"
 
 env:
   APP_NAME: IaC-Bicep
