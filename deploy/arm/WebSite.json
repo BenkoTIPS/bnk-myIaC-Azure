@@ -33,7 +33,7 @@
       }
     },
     {
-      "apiVersion": "2015-08-01",
+      "apiVersion": "2020-12-01",
       "name": "[variables('webSiteName')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
@@ -46,13 +46,17 @@
         "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
       ],
       "properties": {
-        "name": "[variables('webSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "siteConfig": {
+          "LinuxFxVersion" : "DOTNETCORE|6.0",
+          "appCommandLine" : "dotnet myapp.dll"
+        }
       },
       "resources": [
         {
           "name": "appsettings",
           "type": "config",
+          "location": "[resourceGroup().location]",
           "apiVersion": "2015-08-01",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]"
@@ -70,10 +74,10 @@
       ]
     },
     {
-      "apiVersion": "2014-04-01",
+      "apiVersion": "2020-02-02-preview",
       "name": "[variables('insightsName')]",
       "type": "Microsoft.Insights/components",
-      "location": "East US",
+      "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites/', variables('webSiteName'))]"
       ],
@@ -81,8 +85,9 @@
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('webSiteName'))]": "Resource",
         "displayName": "AppInsightsComponent"
       },
-      "properties": {
-        "applicationId": "[variables('webSiteName')]"
+      "kind":"web",
+      "properties" : {
+        "Application_Type": "web"
       }
     }
   ]

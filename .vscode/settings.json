@@ -18,5 +18,7 @@
         "titleBar.inactiveBackground": "#6e39db99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#6e39db"
+    "peacock.color": "#6e39db",
+    "appService.defaultWebAppToDeploy": "/subscriptions/b8c7d821-4fbb-4089-8978-b966512a6a45/resourceGroups/bnk-iac-arm-azcli-rg/providers/Microsoft.Web/sites/bnk-iac-arm-azcli-site",
+    "appService.deploySubpath": "myApp"
 }

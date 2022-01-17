@@ -27,7 +27,7 @@ resource hostingPlanName 'Microsoft.Web/serverfarms@2015-08-01' = {
   }
 }
 
-resource webSiteName 'Microsoft.Web/sites@2015-08-01' = {
+resource webSiteName 'Microsoft.Web/sites@2020-12-01' = {
   name: webSiteName_var
   location: resourceGroup().location
   kind: 'app,linux'
@@ -36,15 +36,18 @@ resource webSiteName 'Microsoft.Web/sites@2015-08-01' = {
     displayName: 'Website'
   }
   properties: {
-    name: webSiteName_var
     serverFarmId: hostingPlanName.id
+    siteConfig: {
+      linuxFxVersion: 'DOTNETCORE|6.0'
+      appCommandLine: 'dotnet myapp.dll'
+    }
   }
 }
 
 resource webSiteName_appsettings 'Microsoft.Web/sites/config@2015-08-01' = {
   parent: webSiteName
   name: 'appsettings'
-  location: 'centralus'
+  location: resourceGroup().location
   tags: {
     displayName: 'config'
   }
@@ -56,15 +59,17 @@ resource webSiteName_appsettings 'Microsoft.Web/sites/config@2015-08-01' = {
   }
 }
 
-resource insightsName 'Microsoft.Insights/components@2020-02-02' = {
+resource insightsName 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: insightsName_var
-  location: 'East US'
-  kind: 'web'
+  location: resourceGroup().location
   tags: {
     'hidden-link:${resourceGroup().id}/providers/Microsoft.Web/sites/${webSiteName_var}': 'Resource'
     displayName: 'AppInsightsComponent'
   }
-
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+  }
   dependsOn: [
     webSiteName
   ]
