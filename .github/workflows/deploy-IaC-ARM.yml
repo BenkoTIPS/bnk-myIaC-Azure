@@ -1,0 +1,40 @@
+name: Deploy-IaC-ARM
+on:
+  workflow_dispatch: # Run manually 
+  push:
+    branches:
+    - 1.0-VSArm
+    - 1.2-Code-ARM
+
+env:
+  APP_NAME: IaC-arm
+  AZURE_RG_LOCATION: centralus
+jobs:
+  deploy-ARM:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+      # Deploy Infrastructure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup AzureCLI
+      run: |
+        echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+        echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+        pwd
+        ls -la deploy/arm
+        az group create --name bnk-${{env.APP_NAME}}-actions --location ${{env.AZURE_RG_LOCATION}}
+        echo "Azure resource group created"
+
+      # Deploy ARM template
+    - name: Run ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+        resourceGroupName: bnk-${{ env.APP_NAME }}-actions
+        template: ./deploy/arm/WebSite.json
+        parameters: deploy/arm/params.bnk.json appName=${{ env.APP_NAME }}
+

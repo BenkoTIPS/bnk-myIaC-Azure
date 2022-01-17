@@ -1,0 +1,24 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#8e64e3",
+        "activityBar.activeBorder": "#ebb093",
+        "activityBar.background": "#8e64e3",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#ebb093",
+        "activityBarBadge.foreground": "#15202b",
+        "sash.hoverBorder": "#8e64e3",
+        "statusBar.background": "#6e39db",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#8e64e3",
+        "statusBarItem.remoteBackground": "#6e39db",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#6e39db",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#6e39db99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#6e39db",
+    "appService.defaultWebAppToDeploy": "/subscriptions/b8c7d821-4fbb-4089-8978-b966512a6a45/resourceGroups/bnk-iac-arm-azcli-rg/providers/Microsoft.Web/sites/bnk-iac-arm-azcli-site",
+    "appService.deploySubpath": "myApp"
+}
