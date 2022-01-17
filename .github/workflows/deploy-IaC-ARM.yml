@@ -1,4 +1,4 @@
-name: Deploy IaC ARM
+name: Deploy-IaC-ARM
 on:
   workflow_dispatch: # Run manually 
   push:

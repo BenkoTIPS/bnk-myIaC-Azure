@@ -1,4 +1,4 @@
-name: Deploy Code ARM
+name: Deploy-Code-ARM
 on:
   workflow_dispatch:
   # push:
@@ -7,7 +7,7 @@ on:
   #   - complete
   workflow_run:
     workflows:
-      - "Deploy IaC ARM"
+      - Deploy-IaC-ARM
     types:
       - completed
     branches:

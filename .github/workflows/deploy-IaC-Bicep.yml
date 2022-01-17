@@ -1,4 +1,4 @@
-name: deploy-IaC-Bicep
+name: Deploy-IaC-Bicep
 on:
   workflow_dispatch: # Run manually 
   push:
