@@ -5,7 +5,8 @@ on:
       - "deploy-IaC-ARM"
     type:
       - complete
-
+    branches:
+    - 1.2-Code-Bicep
 jobs:
   say_hi:
     runs-on: ubuntu-latest
