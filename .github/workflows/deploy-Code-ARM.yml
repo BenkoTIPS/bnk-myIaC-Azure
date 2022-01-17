@@ -12,7 +12,7 @@ on:
       - completed
     branches:
     - 1.2-Code-ARM
-    - complete
+    - master
 
 env:
   APP_NAME: IaC-arm
