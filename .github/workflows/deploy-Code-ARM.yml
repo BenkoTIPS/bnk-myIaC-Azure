@@ -7,9 +7,9 @@ on:
   #   - complete
   workflow_run:
     workflows:
-      - "deploy-IaC-ARM"
+      - "Deploy IaC ARM"
     type:
-      - complete
+      - completed
     branches:
     - 1.2-Code-ARM
     - complete
