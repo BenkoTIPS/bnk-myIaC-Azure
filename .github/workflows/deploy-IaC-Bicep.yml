@@ -39,7 +39,7 @@ jobs:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: bnk-${{ env.APP_NAME }}-actions
         template: ./deploy/arm/WebSite.json
-        parameters: deploy/arm/WebSite.parameters.json appName=${{ env.APP_NAME }}
+        parameters: deploy/arm/params.bnk.json appName=${{ env.APP_NAME }}
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1

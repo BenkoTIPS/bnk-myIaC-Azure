@@ -6,10 +6,10 @@
       "value": "myApp-vsarm"
     },
     "envName": {
-      "value": "bnk"
+      "value": "ARM-Actions"
     },
     "favoriteColor": {
-      "value": "lightgreen"
+      "value": "lightpink"
     },
     "mySecret": {
       "value": "Replace with KeyVault reference"
