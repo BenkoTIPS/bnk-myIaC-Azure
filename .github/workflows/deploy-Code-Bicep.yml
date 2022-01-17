@@ -1,4 +1,4 @@
-name: Deploy-Code-ARM
+name: Deploy-Code-Bicep
 on:
   workflow_dispatch:
   # push:
