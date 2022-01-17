@@ -1,4 +1,4 @@
-name: Deploy-IaC-Bicep
+name: Deploy-IaC-Terraform
 on:
   workflow_dispatch: # Run manually 
   push:
@@ -44,8 +44,8 @@ jobs:
         terraform_version: ${{ env.tf_version }}
 
     - name: Init TF
-      run: terraform init --backend-config="key=${{ env.APP_NAME }}-actions.terraform.tfstate" -var-file ./params.bnk.tfvars
+      run: terraform init -var-file ./params.bnk.tfvars
 
     - name: TF Apply
-      run: terraform apply -auto-approve --backend-config="key=${{ env.APP_NAME }}-actions.terraform.tfstate" -var-file ./params.bnk.tfvars
+      run: terraform apply -auto-approve -var-file ./params.bnk.tfvars
 
