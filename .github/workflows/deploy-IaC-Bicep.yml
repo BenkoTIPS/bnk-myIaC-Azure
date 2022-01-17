@@ -36,6 +36,6 @@ jobs:
       with:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName: bnk-${{ env.APP_NAME }}-actions
-        template: ./deploy/bicep/website.json
+        template: ./deploy/bicep/website.bicep
         parameters: deploy/bicep/params.bnk.json appName=${{ env.APP_NAME }}
 
