@@ -1,6 +1,7 @@
 name: Deploy Code ARM
 on:
   workflow_dispatch:
+  push:
     branches:
     - 1.2-Code-ARM
     - complete
