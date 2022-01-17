@@ -1,4 +1,4 @@
-name: Deploy-IaC-Terraform
+name: Deploy-IaC-TF
 on:
   workflow_dispatch: # Run manually 
   push:
