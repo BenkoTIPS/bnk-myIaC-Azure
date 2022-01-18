@@ -53,6 +53,7 @@ resource "azurerm_app_service" "site" {
   app_settings = {
     EnvName = var.app_name
     FavoriteColor = "lightpink"
+    MySecret = ""
     APPLICATION_INSIGHTSKEY = azurerm_application_insights.ai.instrumentation_key
   }
   site_config  {
