@@ -28,10 +28,28 @@ variable "tool" {
     default="azcli"
 }
 
+locals {
+  common_tags = {
+    "CreatorId"   = data.azurerm_client_config.current.object_id,
+    "Environment" = "${var.env_name}",
+    "CreatedBy"   = "#{GITHUB_ACTOR}#",
+    "Repo"        = "#{GITHUB_REPOSITORY}#"
+    "CreateDt"    = "${formatdate("YY-MM-DD hh:mm",timestamp())}",
+    "CostCenter"  = "BenkoTips-DEMOS"
+    "Commit"      = "#{SHORT_SHA}#"
+    "TF-State-Key" = "tf-deploy-#{APP_NAME}#-#{ENV_NAME}#.tfstate"
+  }  
+}
+
 resource "azurerm_resource_group" "rg" {
   name = "${var.env_name}-${var.app_name}-${var.tool}"
   location = "centralus"
+  tags = local.common_tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
+
 
 resource "azurerm_app_service_plan" "plan" {
   name                = "${var.app_name}-plan"

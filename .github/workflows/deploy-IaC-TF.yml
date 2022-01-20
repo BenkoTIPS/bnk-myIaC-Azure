@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - poc-test-backendtf
     paths:
       - "deploy/terraform/**"
 
@@ -49,7 +50,7 @@ jobs:
         terraform_version: ${{ env.tf_version }}
 
     - name: Init TF
-      run: terraform init -var-file ./params.bnk.tfvars
+      run: terraform init -var-file ./params.bnk.tfvars -backend-config="${{env.ENV_NAME}}.backend.tfvars"
 
     - name: TF Apply
       run: terraform apply -auto-approve -var-file ./params.bnk.tfvars
