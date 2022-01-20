@@ -9,7 +9,10 @@ on:
 
 env:
   APP_NAME: IaC-TF
+  ENV_NAME: "poc"
   AZURE_RG_LOCATION: centralus
+  TF_STORAGE_RG: "poc-shared-tfstate"
+  TF_STORAGE_ACCT: "poceusastfstate"
     
 jobs:
   deploy-Terraform:
@@ -33,6 +36,12 @@ jobs:
           echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
           echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+
+    # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
+    - name: Replace tokens
+      uses: cschleiden/replace-tokens@v1.0
+      with:
+        files: '["**/*.tf"]' 
 
     - name: Install TF
       uses: hashicorp/setup-terraform@v1
