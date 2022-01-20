@@ -42,7 +42,7 @@ jobs:
     - name: Replace tokens
       uses: cschleiden/replace-tokens@v1.0
       with:
-        files: '["**/*.tf"]' 
+        files: '["**/*.tf", "**/*.tfvars"]' 
 
     - name: Install TF
       uses: hashicorp/setup-terraform@v1
