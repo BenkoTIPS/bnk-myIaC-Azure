@@ -50,7 +50,7 @@ jobs:
         terraform_version: ${{ env.tf_version }}
 
     - name: Init TF
-      run: terraform init -var-file ./params.bnk.tfvars -backend-config="${{env.ENV_NAME}}.backend.tfvars"
+      run: terraform init -var-file ./params.bnk.tfvars -backend-config="actions.backend.tfvars"
 
     - name: TF Apply
       run: terraform apply -auto-approve -var-file ./params.bnk.tfvars
