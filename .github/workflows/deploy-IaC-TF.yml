@@ -36,9 +36,9 @@ jobs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: |
-        pr = ${{ github.event.number }}
-        printf -v j "%-3d" $pr
-        echo "ENV_NAME=$j >> $GITHUB_ENV
+        # pr = ${{ github.event.number }}
+        # printf -v j "%-3d" $pr
+        echo "ENV_NAME=$(echo pr${{github.event.number }}) >> $GITHUB_ENV
 
     - name: Setup Authentication for TF
       uses: Azure/cli@v1
