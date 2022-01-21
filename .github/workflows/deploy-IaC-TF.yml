@@ -7,6 +7,12 @@ on:
     - poc-test-backendtf
     paths:
       - "deploy/terraform/**"
+  pull_request:
+    branches:
+    - master
+    - release/*
+    
+  
 
 env:
   APP_NAME: IaC-TF
@@ -24,10 +30,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-      # Deploy Infrastructure
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # extract branch name from inputs
+    - name: Extract branch name from inputs
+      if: github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        pr = ${{ github.event.number }}
+        printf -v j "%-3d" $pr
+        echo "ENV_NAME=$j >> $GITHUB_ENV
 
     - name: Setup Authentication for TF
       uses: Azure/cli@v1
@@ -43,6 +54,24 @@ jobs:
       uses: cschleiden/replace-tokens@v1.0
       with:
         files: '["**/*.tf", "**/*.tfvars"]' 
+
+    # print Environment
+    - name: Print Environment
+      run: |
+        pwd
+        ls -la
+        echo '*** Workflow ENV ***'
+        echo 'APP_NAME:' $APP_NAME
+        echo 'ENV_NAME:' $ENV_NAME
+        cat backend.tf
+        cat vars.tf
+        cat actions.backend.tfvars
+        cat ./params.bnk.tfvars
+
+      # Deploy Infrastructure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Install TF
       uses: hashicorp/setup-terraform@v1
