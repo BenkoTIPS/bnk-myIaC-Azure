@@ -52,8 +52,8 @@ jobs:
         echo 'APP_NAME:' $APP_NAME
         echo 'ENV_NAME:' $ENV_NAME
         cat backend.tf
-        cat actions.backend.tfvars
-        cat params.bnk.tfvars
+        cat backend.actions.tfvars
+        cat params.actions.tfvars
 
       # Deploy Infrastructure
     - uses: azure/login@v1
