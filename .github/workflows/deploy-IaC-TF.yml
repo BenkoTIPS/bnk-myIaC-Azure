@@ -11,9 +11,7 @@ on:
     branches:
     - master
     - release/*
-    
-  
-
+   
 env:
   APP_NAME: IaC-TF
   ENV_NAME: "poc"
