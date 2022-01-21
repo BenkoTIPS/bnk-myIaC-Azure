@@ -18,6 +18,7 @@ env:
   AZURE_RG_LOCATION: centralus
   TF_STORAGE_RG: "poc-shared-tfstate"
   TF_STORAGE_ACCT: "poceusastfstate"
+  PR_NUMBER: ${{ github.event.number }}
     
 jobs:
   deploy-Terraform:
@@ -34,8 +35,7 @@ jobs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: |
-        printf -v pr_number "%-3d" ${{ github.event.number }}
-        echo "ENV_NAME=$(echo pr$(pr_number))" >> $GITHUB_ENV
+        echo "ENV_NAME=$(echo pr-${{ env.PR_NUMBER }})" >> $GITHUB_ENV
 
 
     # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
