@@ -31,7 +31,7 @@ variable "tool" {
 locals {
   common_tags = {
     "CreatorId"   = data.azurerm_client_config.current.object_id,
-    "Environment" = "${var.env_name}",
+    "Environment" = "#{ENV_NAME}#",
     "CreatedBy"   = "#{GITHUB_ACTOR}#",
     "Repo"        = "#{GITHUB_REPOSITORY}#"
     "CreateDt"    = "${formatdate("YY-MM-DD hh:mm",timestamp())}",
@@ -42,7 +42,7 @@ locals {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name = "${var.env_name}-${var.app_name}-${var.tool}"
+  name = "act-${var.env_name}-${var.app_name}-${var.tool}"
   location = "centralus"
   tags = local.common_tags
   lifecycle {
