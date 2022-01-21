@@ -52,7 +52,7 @@ resource "azurerm_resource_group" "rg" {
 
 
 resource "azurerm_app_service_plan" "plan" {
-  name                = "${var.app_name}-plan"
+  name                = "${var.env_name}-${var.app_name}-plan"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "linux"

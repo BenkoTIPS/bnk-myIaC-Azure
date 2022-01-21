@@ -35,7 +35,7 @@ jobs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: |
-        echo "ENV_NAME=$(echo pr-${{ env.PR_NUMBER }})" >> $GITHUB_ENV
+        echo "ENV_NAME=$(echo pr${{ env.PR_NUMBER }})" >> $GITHUB_ENV
 
 
     # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
