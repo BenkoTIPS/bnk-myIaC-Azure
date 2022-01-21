@@ -29,6 +29,11 @@ variable "tool" {
 }
 
 locals {
+  rg_name   = "${var.tool}-${var.env_name}-${var.app_name}"
+  host_name = "${var.tool}-${var.env_name}-${var.app_name}-plan"
+  site_name = "${var.tool}-${var.env_name}-${var.app_name}-site"
+  ai_name   = "${var.tool}-${var.env_name}-${var.app_name}-ai"
+
   common_tags = {
     "CreatorId"   = data.azurerm_client_config.current.object_id,
     "Environment" = "#{ENV_NAME}#",
@@ -42,7 +47,7 @@ locals {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name = "act-${var.env_name}-${var.app_name}-${var.tool}"
+  name = local.rg_name
   location = "centralus"
   tags = local.common_tags
   lifecycle {
@@ -52,7 +57,7 @@ resource "azurerm_resource_group" "rg" {
 
 
 resource "azurerm_app_service_plan" "plan" {
-  name                = "${var.env_name}-${var.app_name}-plan"
+  name                = local.host_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "linux"
@@ -64,7 +69,7 @@ resource "azurerm_app_service_plan" "plan" {
 }
 
 resource "azurerm_app_service" "site" {
-  name                = "${var.env_name}-${var.app_name}-site"
+  name                = local.site_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.plan.id
@@ -81,7 +86,7 @@ resource "azurerm_app_service" "site" {
 }
 
 resource "azurerm_application_insights" "ai" {
-  name = "${var.env_name}-${var.app_name}-ai"
+  name                = local.ai_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type = "web"  
