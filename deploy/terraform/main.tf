@@ -2,7 +2,7 @@ terraform {
   required_providers { 
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.0"
+      version = "= 2.92.0"
     }
   }
   
@@ -63,7 +63,7 @@ resource "azurerm_app_service_plan" "plan" {
   kind                = "linux"
   reserved = true
   sku {
-    tier = "standard"
+    tier = "Standard"
     size = "S1"
   }
 }

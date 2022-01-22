@@ -4,10 +4,10 @@ az account show
 
 $env = "local"
 $appName = "iac-tf-azcli"
-$params = ".\params.$env.json"
+$params = ".\params.$env.tfvars"
 
 del .\.terraform*
-terraform init -backend-config="$env.backend.tfvars"
+terraform init -backend-config="backend.$env.tfvars"
 
 terraform plan -var-file params.$env.tfvars
 
