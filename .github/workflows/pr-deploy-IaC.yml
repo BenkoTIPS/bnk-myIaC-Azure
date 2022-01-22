@@ -7,7 +7,7 @@ on:
       - release/*
 
 env:
-  APP_NAME: IaC-TF
+  APP_NAME: POC-IaC-TF
   AZURE_RG_LOCATION: centralus
   TF_STORAGE_RG: "poc-shared-tfstate"
   TF_STORAGE_ACCT: "poceusastfstate"
