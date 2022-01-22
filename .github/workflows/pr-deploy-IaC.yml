@@ -29,7 +29,7 @@ jobs:
         cat params.actions.tfvars
 
   PR-Opened:
-    if: contains(github.event.pull_reqest.action, 'opened')
+    if: contains(github.event.pull_request.action, 'opened')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -81,7 +81,7 @@ jobs:
       run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 
   PR-Closed:
-    if: contains(github.event.pull_reqest.action, 'closed')
+    if: contains(github.event.pull_request.action, 'closed')
     runs-on: ubuntu-latest
     defaults:
       run:
