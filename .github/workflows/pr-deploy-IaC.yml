@@ -2,6 +2,9 @@ name: PR-Deploy-IaC
 on:
   workflow_dispatch: # Run manually 
   pull_request:
+    branches: 
+    - main
+    - release/*
     types: [ opened, closed, reopened]
 
 env:
