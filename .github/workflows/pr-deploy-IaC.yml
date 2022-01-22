@@ -25,9 +25,10 @@ jobs:
         echo 'APP_NAME:' $APP_NAME
         echo 'ENV_NAME:' $ENV_NAME
         echo 'PR_NUMBER:' $PR_NUMBER
+        echo ${{ github.event.pull_request.action }}
 
   PR-Opened:
-    if: ${{ github.event.pull_request.action == 'opened' }}
+    if: ${{ contains(github.event.pull_request.action, 'opened') }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -79,7 +80,7 @@ jobs:
       run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 
   PR-Closed:
-    if: ${{ github.event.pull_request.action == 'closed' }}
+    if: ${{ contains(github.event.pull_request.action, 'closed') }}
     runs-on: ubuntu-latest
     defaults:
       run:
