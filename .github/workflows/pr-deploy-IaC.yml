@@ -31,7 +31,7 @@ jobs:
         echo 'Action:' ${{ github.event.action != 'closed' }}
 
   PR-Opened:
-    if: ${{ contains(github.event.pull_request.action, 'opened') }}
+    if: ${{ contains(github.event.action, 'opened') }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -83,7 +83,7 @@ jobs:
       run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 
   PR-Closed:
-    if: ${{ contains(github.event.pull_request.action, 'closed') }}
+    if: ${{ contains(github.event.action, 'closed') }}
     runs-on: ubuntu-latest
     defaults:
       run:
