@@ -27,7 +27,7 @@ jobs:
         echo 'PR_NUMBER:' $PR_NUMBER
 
   PR-Opened:
-    if: contains(github.event.pull_request.action, 'opened')
+    if: github.event.pull_request.action == 'opened'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -79,7 +79,7 @@ jobs:
       run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 
   PR-Closed:
-    if: contains(github.event.pull_request.action, 'closed')
+    if: github.event.pull_request.action == 'closed'
     runs-on: ubuntu-latest
     defaults:
       run:
