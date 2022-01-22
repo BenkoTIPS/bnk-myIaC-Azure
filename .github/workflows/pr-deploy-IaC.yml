@@ -8,7 +8,7 @@ on:
     types: [ opened, closed, reopened]
 
 env:
-  APP_NAME: POC-IaC-TF
+  APP_NAME: IaC-TF
   ENV_NAME: pr${{ github.event.number }}
   ACTION: ${{ github.event.action}}
   AZURE_RG_LOCATION: centralus
@@ -30,6 +30,8 @@ jobs:
 
   PR-Opened:
     if: ${{ contains(github.event.action, 'opened') }}
+    needs:
+    - Hello-World
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -86,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENV_NAME: pr${{ github.event.number }}
-      APP_NAME: act-pr${{github.event.number}}-IaC-TF
+      APP_NAME: IaC-TF
       AZURE_RG_LOCATION: centralus
       AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
       CONFIGURATION: Release
@@ -139,6 +141,8 @@ jobs:
 
   PR-Closed:
     if: ${{ contains(github.event.action, 'closed') }}
+    needs:
+    - Hello-World
     runs-on: ubuntu-latest
     defaults:
       run:
