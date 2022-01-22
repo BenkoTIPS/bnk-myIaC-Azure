@@ -25,8 +25,8 @@ jobs:
         echo 'APP_NAME:' $APP_NAME
         echo 'ENV_NAME:' $ENV_NAME
         echo 'PR_NUMBER:' $PR_NUMBER
-        echo 'pull_request: ' $github.event.pull_request
-        echo 'Action:' ${{ github.event.pull_request.action }}
+        echo 'pull_request: ' $(github.event.pull_request)
+        echo 'Action:' ${{ contains(github.event.pull_request.action, 'opened') }}
 
   PR-Opened:
     if: ${{ contains(github.event.pull_request.action, 'opened') }}
