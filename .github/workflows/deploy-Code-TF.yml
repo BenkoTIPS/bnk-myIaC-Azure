@@ -8,6 +8,7 @@ on:
   workflow_run:
     workflows:
       - Deploy-IaC-TF
+      - PR-Deploy-IaC-TF
     types:
       - completed
     branches:
