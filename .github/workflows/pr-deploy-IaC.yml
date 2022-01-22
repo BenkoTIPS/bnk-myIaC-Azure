@@ -26,22 +26,14 @@ jobs:
         echo 'ENV_NAME:' $ENV_NAME
         echo 'PR_NUMBER:' $PR_NUMBER
 
-  Terraform-it:
+  PR-Opened:
+    if: ${{ github.event.pull_request.action == 'opened' }}
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./deploy/terraform
     steps:
     - uses: actions/checkout@v2
-
-    - name: Am-I-a-new-pr
-      if: github.event.pull_request.action == 'opened'
-      run: echo '---> OPENED PR'
-
-    - name: Am-I-a-new-pr
-      if: github.event.pull_request.action == 'closed'
-      run: echo '---> CLOSED PR'
-
 
     # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
     - name: Replace tokens
@@ -84,10 +76,56 @@ jobs:
       run: terraform init -var-file ./params.actions.tfvars -backend-config="backend.actions.tfvars"
 
     - name: TF Apply
-      if: github.event.pull_request.action == 'opened'
       run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 
+  PR-Closed:
+    if: ${{ github.event.pull_request.action == 'closed' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deploy/terraform
+    steps:
+    - uses: actions/checkout@v2
+
+    # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
+    - name: Replace tokens
+      uses: cschleiden/replace-tokens@v1.0
+      with:
+        files: '["**/*.tf", "**/*.tfvars"]' 
+
+    # print Environment
+    - name: Print Environment
+      run: |
+        pwd
+        ls -la
+        echo '*** Workflow ENV ***'
+        echo 'APP_NAME:' $APP_NAME
+        echo 'ENV_NAME:' $ENV_NAME
+        cat backend.tf
+        cat backend.actions.tfvars
+        cat params.actions.tfvars
+
+      # Deploy Infrastructure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Authentication for TF
+      uses: Azure/cli@v1
+      with:
+        inlineScript: | 
+          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+
+    - name: Install TF
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.tf_version }}
+
+    - name: Init TF
+      run: terraform init -var-file ./params.actions.tfvars -backend-config="backend.actions.tfvars"
 
     - name: TF Destroy
-      if: github.event.pull_request.action == 'closed'
       run: terraform destroy -auto-approve 
