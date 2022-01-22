@@ -1,4 +1,4 @@
-name: pr-deploy-IaC
+name: PR-Deploy-IaC
 on:
   workflow_dispatch: # Run manually 
   pull_request:

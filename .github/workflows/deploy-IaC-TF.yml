@@ -6,10 +6,6 @@ on:
     - master
     paths:
       - "deploy/terraform/**"
-  pull_request:
-    branches:
-    - master
-    - release/*
 
 env:
   APP_NAME: IaC-TF
