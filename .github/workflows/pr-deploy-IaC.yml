@@ -14,6 +14,7 @@ env:
   TF_STORAGE_ACCT: "poceusastfstate"
   PR_NUMBER: ${{ github.event.number }}
   ENV_NAME: pr${{ github.event.number }}
+  ACTION: ${{ github.event.pull_request.action}}
     
 jobs:
   Hello-World:
@@ -25,8 +26,9 @@ jobs:
         echo 'APP_NAME:' $APP_NAME
         echo 'ENV_NAME:' $ENV_NAME
         echo 'PR_NUMBER:' $PR_NUMBER
-        echo 'action: ' $(github.event.pull_request.action)
-        echo 'Action:' ${{ contains(github.event.pull_request.action, 'ed') }}
+        echo 'action: ' $ACTION
+        echo 'Action:' ${{ github.event.pull_request.action != 'opened' }}
+        echo 'Action:' ${{ github.event.pull_request.action != 'closed' }}
 
   PR-Opened:
     if: ${{ contains(github.event.pull_request.action, 'opened') }}
