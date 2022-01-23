@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - poc-test-backendtf
     paths:
       - "deploy/arm/**"
 

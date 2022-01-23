@@ -10,7 +10,7 @@ var webSiteName_var = '${prefix}-site'
 var hostingPlanName_var = '${prefix}-plan'
 var insightsName_var = '${prefix}-ai'
 
-resource hostingPlanName 'Microsoft.Web/serverfarms@2015-08-01' = {
+resource hostingPlanName 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: hostingPlanName_var
   location: resourceGroup().location
   kind: 'linux'
@@ -22,7 +22,6 @@ resource hostingPlanName 'Microsoft.Web/serverfarms@2015-08-01' = {
     tier: 'Standard'
   }
   properties: {
-    name: hostingPlanName_var
     reserved: true
   }
 }

@@ -12,6 +12,7 @@ on:
       - completed
     branches:
     - master
+    - poc-test-backendtf
     paths:
       - "myApp/**"
 

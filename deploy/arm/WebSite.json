@@ -5,7 +5,18 @@
     "appName": { "type": "string" },
     "envName": { "type": "string" },
     "favoriteColor": { "type": "string" },
-    "mySecret": { "type": "securestring" }
+    "mySecret": { "type": "securestring" },
+    "common_tags": {
+      "type": "object",
+      "defaultValue":{
+          "Environment" : "poc",
+          "CreatedBy"   : "arm-deploy",
+          "Repo"        : "#{GITHUB_REPOSITORY}#",
+          "CreateDt"    : "[utcNow('MM-dd-yyyy hh:mm')]",
+          "CostCenter"  : "BenkoTips-DEMOS",
+          "Commit"      : "#{SHORT_SHA}#"
+      }
+    }
   },
   "variables": {
     "prefix": "[concat(parameters('envName'),'-',parameters('appName'))]",
@@ -20,9 +31,7 @@
       "type": "Microsoft.Web/serverfarms",
       "location": "[resourceGroup().location]",
       "kind": "linux",
-      "tags": {
-        "displayName": "HostingPlan"
-      },
+      "tags": "[parameters('common_tags')]",
       "sku": {
         "name": "S1",
         "tier": "Standard"

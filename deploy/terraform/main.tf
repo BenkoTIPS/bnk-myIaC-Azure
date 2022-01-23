@@ -2,7 +2,7 @@ terraform {
   required_providers { 
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 2.0"
+      version = "= 2.92.0" # Hack to specific version due to bug in v2.93.0
     }
   }
   
@@ -28,25 +28,48 @@ variable "tool" {
     default="azcli"
 }
 
-resource "azurerm_resource_group" "rg" {
-  name = "${var.env_name}-${var.app_name}-${var.tool}"
-  location = "centralus"
+locals {
+  rg_name   = "${var.tool}-${var.env_name}-${var.app_name}"
+  host_name = "${var.tool}-${var.env_name}-${var.app_name}-plan"
+  site_name = "${var.tool}-${var.env_name}-${var.app_name}-site"
+  ai_name   = "${var.tool}-${var.env_name}-${var.app_name}-ai"
+
+  common_tags = {
+    "CreatorId"   = data.azurerm_client_config.current.object_id,
+    "Environment" = "#{ENV_NAME}#",
+    "CreatedBy"   = "#{GITHUB_ACTOR}#",
+    "Repo"        = "#{GITHUB_REPOSITORY}#"
+    "CreateDt"    = "${formatdate("YY-MM-DD hh:mm",timestamp())}",
+    "CostCenter"  = "BenkoTips-DEMOS"
+    "Commit"      = "#{SHORT_SHA}#"
+    "TF-State-Key" = "tf-deploy-#{APP_NAME}#-#{ENV_NAME}#.tfstate"
+  }  
 }
 
+resource "azurerm_resource_group" "rg" {
+  name = local.rg_name
+  location = "centralus"
+  tags = local.common_tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+
 resource "azurerm_app_service_plan" "plan" {
-  name                = "${var.app_name}-plan"
+  name                = local.host_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "linux"
   reserved = true
   sku {
-    tier = "standard"
+    tier = "Standard"
     size = "S1"
   }
 }
 
 resource "azurerm_app_service" "site" {
-  name                = "${var.env_name}-${var.app_name}-site"
+  name                = local.site_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.plan.id
@@ -63,7 +86,7 @@ resource "azurerm_app_service" "site" {
 }
 
 resource "azurerm_application_insights" "ai" {
-  name = "${var.env_name}-${var.app_name}-ai"
+  name                = local.ai_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type = "web"  
