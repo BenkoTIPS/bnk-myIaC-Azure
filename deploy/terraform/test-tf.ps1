@@ -2,17 +2,15 @@ az login
 
 az account show
 
-$env = "bnk"
+$env = "local"
 $appName = "iac-tf-azcli"
-$rg = "$env-$appName-rg"
-$params = ".\params.$env.json"
-$deployName = "test-bicep-" + (get-date -format "MMdd-HHmm")
+$params = ".\params.$env.tfvars"
 
 del .\.terraform*
-terraform init -backend-config="local.backend.tfvars"
+terraform init -backend-config="backend.$env.tfvars"
 
-terraform plan -var-file params.bnk.tfvars
+terraform plan -var-file params.$env.tfvars
 
-terraform apply -var-file params.bnk.tfvars
+terraform apply -var-file params.$env.tfvars
 
-terraform destroy -var-file params.bnk.tfvars
+terraform destroy -var-file params.$env.tfvars

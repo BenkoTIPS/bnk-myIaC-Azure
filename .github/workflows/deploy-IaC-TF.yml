@@ -4,20 +4,16 @@ on:
   push:
     branches:
     - master
-    - poc-test-backendtf
     paths:
       - "deploy/terraform/**"
-  pull_request:
-    branches:
-    - master
-    - release/*
-   
+
 env:
   APP_NAME: IaC-TF
   ENV_NAME: "poc"
   AZURE_RG_LOCATION: centralus
   TF_STORAGE_RG: "poc-shared-tfstate"
   TF_STORAGE_ACCT: "poceusastfstate"
+  PR_NUMBER: ${{ github.event.number }}
     
 jobs:
   deploy-Terraform:
@@ -34,18 +30,8 @@ jobs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: |
-        pr = ${{ github.event.number }}
-        printf -v j "%-3d" $pr
-        echo "ENV_NAME=$j >> $GITHUB_ENV
+        echo "ENV_NAME=$(echo pr${{ env.PR_NUMBER }})" >> $GITHUB_ENV
 
-    - name: Setup Authentication for TF
-      uses: Azure/cli@v1
-      with:
-        inlineScript: | 
-          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
-          echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
 
     # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
     - name: Replace tokens
@@ -62,14 +48,22 @@ jobs:
         echo 'APP_NAME:' $APP_NAME
         echo 'ENV_NAME:' $ENV_NAME
         cat backend.tf
-        cat vars.tf
-        cat actions.backend.tfvars
-        cat ./params.bnk.tfvars
+        cat backend.actions.tfvars
+        cat params.actions.tfvars
 
       # Deploy Infrastructure
     - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Authentication for TF
+      uses: Azure/cli@v1
+      with:
+        inlineScript: | 
+          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
 
     - name: Install TF
       uses: hashicorp/setup-terraform@v1
@@ -77,8 +71,8 @@ jobs:
         terraform_version: ${{ env.tf_version }}
 
     - name: Init TF
-      run: terraform init -var-file ./params.bnk.tfvars -backend-config="actions.backend.tfvars"
+      run: terraform init -var-file ./params.actions.tfvars -backend-config="backend.actions.tfvars"
 
     - name: TF Apply
-      run: terraform apply -auto-approve -var-file ./params.bnk.tfvars
+      run: terraform apply -auto-approve -var-file ./params.actions.tfvars
 

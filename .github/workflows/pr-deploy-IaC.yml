@@ -1,0 +1,194 @@
+name: PR-Deploy-IaC-TF
+on:
+  workflow_dispatch: # Run manually 
+  pull_request:
+    branches: 
+    - main
+    - release/*
+    types: [ opened, closed, reopened]
+
+env:
+  APP_NAME: IaC-TF
+  ENV_NAME: pr${{ github.event.number }}
+  ACTION: ${{ github.event.action}}
+  AZURE_RG_LOCATION: centralus
+  TF_STORAGE_RG: "poc-shared-tfstate"
+  TF_STORAGE_ACCT: "poceusastfstate"
+  PR_NUMBER: ${{ github.event.number }}
+    
+jobs:
+  Hello-World:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print Environment
+      run: |
+        echo '*** Print ENV ***'
+        echo 'APP_NAME:' $APP_NAME
+        echo 'ENV_NAME:' $ENV_NAME
+        echo 'PR_NUMBER:' $PR_NUMBER
+        echo 'action: ' $ACTION
+
+  PR-Opened:
+    if: ${{ contains(github.event.action, 'opened') }}
+    needs:
+    - Hello-World
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deploy/terraform
+    steps:
+    - uses: actions/checkout@v2
+
+    # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
+    - name: Replace tokens
+      uses: cschleiden/replace-tokens@v1.0
+      with:
+        files: '["**/*.tf", "**/*.tfvars"]' 
+
+    # print Environment
+    - name: Print Environment
+      run: |
+        pwd
+        ls -la
+        echo '*** Workflow ENV ***'
+        echo 'APP_NAME:' $APP_NAME
+        echo 'ENV_NAME:' $ENV_NAME
+        cat backend.tf
+        cat backend.actions.tfvars
+        cat params.actions.tfvars
+
+      # Deploy Infrastructure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Authentication for TF
+      uses: Azure/cli@v1
+      with:
+        inlineScript: | 
+          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+
+    - name: Install TF
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.tf_version }}
+
+    - name: Init TF
+      run: terraform init -var-file ./params.actions.tfvars -backend-config="backend.actions.tfvars"
+
+    - name: TF Apply
+      run: terraform apply -auto-approve -var-file ./params.actions.tfvars
+
+  Deploy-Code:
+    needs: 
+    - PR-Opened
+    runs-on: ubuntu-latest
+    env:
+      ENV_NAME: pr${{ github.event.number }}
+      APP_NAME: IaC-TF
+      AZURE_RG_LOCATION: centralus
+      AZURE_WEBAPP_PACKAGE_PATH: myApp/publish
+      CONFIGURATION: Release
+      DOTNET_CORE_VERSION: 6.0.x
+      WORKING_DIRECTORY: myApp
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: site
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+    - name: Download site package
+      uses: actions/download-artifact@v2
+      with:
+        name: site
+        path: ${{ github.workspace }}/site
+
+
+    # Deploy Code to Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure WebApp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: act-${{env.ENV_NAME}}-${{ env.APP_NAME }}-site
+        package: ${{ github.workspace }}/site
+
+  PR-Closed:
+    if: ${{ contains(github.event.action, 'closed') }}
+    needs:
+    - Hello-World
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deploy/terraform
+    steps:
+    - uses: actions/checkout@v2
+
+    # Replace Tokens #{ENV_NAME}#: Set TF State Key = Branch name, #{SHORT_SHA}# for tags
+    - name: Replace tokens
+      uses: cschleiden/replace-tokens@v1.0
+      with:
+        files: '["**/*.tf", "**/*.tfvars"]' 
+
+    # print Environment
+    - name: Print Environment
+      run: |
+        pwd
+        ls -la
+        echo '*** Workflow ENV ***'
+        echo 'APP_NAME:' $APP_NAME
+        echo 'ENV_NAME:' $ENV_NAME
+        cat backend.tf
+        cat backend.actions.tfvars
+        cat params.actions.tfvars
+
+      # Deploy Infrastructure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Authentication for TF
+      uses: Azure/cli@v1
+      with:
+        inlineScript: | 
+          echo "ARM_SUBSCRIPTION_ID=$(az account show --query="id" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=$(az account show --query="user.name" -o tsv)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(jq '.clientSecret' -r <<< '${{ secrets.AZURE_CREDENTIALS }}')" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(az account show --query="tenantId" -o tsv)" >> $GITHUB_ENV
+
+    - name: Install TF
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.tf_version }}
+
+    - name: Init TF
+      run: terraform init -var-file ./params.actions.tfvars -backend-config="backend.actions.tfvars"
+
+    - name: TF Destroy
+      run: terraform destroy -auto-approve 
