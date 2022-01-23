@@ -54,6 +54,7 @@ resource "azurerm_app_service" "site" {
     EnvName = var.app_name
     FavoriteColor = "lightpink"
     APPLICATION_INSIGHTSKEY = azurerm_application_insights.ai.instrumentation_key
+    MySecret = "DevDad was here!"
   }
   site_config  {
     dotnet_framework_version = "v6.0"
